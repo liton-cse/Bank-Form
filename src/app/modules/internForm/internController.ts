@@ -15,7 +15,7 @@ import ApiError from '../../../errors/ApiError';
 const createIntern = catchAsync(async (req: Request, res: Response) => {
   // Parse nested fields correctly
   const bodyData = parseNestedFormData(req.body);
-
+  console.log(bodyData);
   const uploadedFilesRaw = getAllUploadedFiles(req.files);
   const uploadedFiles = Object.fromEntries(
     Object.entries(uploadedFilesRaw).filter(([_, v]) => v !== undefined)

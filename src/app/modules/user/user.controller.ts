@@ -124,6 +124,7 @@ const searchEmployee = catchAsync(
 // give the User Statistical data ..
 const getUserStatistics = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log('data');
     const result = await UserService.getUserStats();
     sendResponse(res, {
       success: true,
@@ -150,6 +151,29 @@ const getYearlyUserStats = catchAsync(
     });
   }
 );
+
+//update the employee status..
+const changeEmployeeStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedUser = await UserService.updateEmployeeStatus(id, status);
+    sendResponse(res, {
+      success: true,
+      statusCode: StatusCodes.OK,
+      message: `Employee status update successfully`,
+      data: updatedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const UserController = {
   createUser,
   getUserProfile,
@@ -158,4 +182,5 @@ export const UserController = {
   searchEmployee,
   getUserStatistics,
   getYearlyUserStats,
+  changeEmployeeStatus,
 };

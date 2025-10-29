@@ -15,7 +15,7 @@ const EducationInfoSchema = new Schema(
   {
     schoolName: String,
     major: String,
-    graduationStatus: { type: String, enum: ['Graduated', 'Not Graduate'] },
+    graduationStatus: { type: String, enum: ['Graduated', 'Not Graduated'] },
     yearsCompleted: Number,
     honorsReceived: Boolean,
   },
@@ -91,7 +91,7 @@ const GeneralInfoSchema = new Schema(
     telephoneNumber: { type: String, required: true },
     address: { type: String, required: true },
     emergencyContact: ContactInfoSchema,
-    desiredEmploymentType: { type: String, enum: ['Intern', 'Temporary'] },
+    desiredEmploymentType: { type: String, enum: ['Intern', 'Temp Employee'] },
     desiredSalary: Number,
     hourlyRate: Number,
     appliedPosition: String,

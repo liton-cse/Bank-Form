@@ -56,7 +56,7 @@ const loginUserFromDB = async (payload: ILoginData) => {
     config.jwt.jwt_expire_in as string
   );
 
-  return { createToken };
+  return { createToken, role: isExistUser.employee_role };
 };
 
 //forget password
@@ -265,7 +265,7 @@ const resendOtpToDB = async (email: string) => {
   //generate new otp
   const otp = generateOTP();
   const values = {
-    name: isExistUser.name,
+    name: isExistUser.firstName,
     otp,
     email: isExistUser.email!,
   };

@@ -1,6 +1,6 @@
-export type EmploymentType = 'Intern' | 'Temporary';
+export type EmploymentType = 'Intern' | 'Temp Employee';
 export type OvertimePreference = 'Yes' | 'No';
-export type GraduationStatus = 'Graduated' | 'Not Graduate';
+export type GraduationStatus = 'Graduated' | 'Not Graduated';
 export type BankAccountType = 'Checking' | 'Savings';
 
 export interface IContactInfo {
@@ -35,7 +35,7 @@ export enum ICitizenship {
 export enum IW4Status {
   Single = 'single',
   Married = 'married',
-  MarriedHigher = 'marriedHigher',
+  MarriedHigher = 'divorced',
 }
 
 export enum I9Status {

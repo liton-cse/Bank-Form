@@ -1,7 +1,10 @@
+import { Types } from 'mongoose';
+
 export type EmploymentType = 'Intern' | 'Temporary';
 export type OvertimePreference = 'Yes' | 'No';
 export type GraduationStatus = 'Graduated' | 'Not Graduate';
 export type BankAccountType = 'Checking' | 'Savings';
+export type DepositType = 'full' | 'partial';
 
 export interface IContactInfo {
   name: string;
@@ -10,19 +13,20 @@ export interface IContactInfo {
 }
 
 export interface IEducationInfo {
-  schoolName?: string;
+  level: string;
+  name?: string;
   major?: string;
   graduationStatus?: GraduationStatus;
   yearsCompleted?: number;
-  honorsReceived?: boolean;
+  honorsReceived?: string;
 }
 
 export interface IBankAccount {
   bankName: string;
   state?: string;
-  transitNo: string; // Routing number
-  accountNo: string;
-  depositAmount?: number;
+  transitNo: number; // Routing number
+  accountNo: number;
+  depositType?: DepositType;
   depositPercentage: number;
 }
 
@@ -35,14 +39,14 @@ export enum ICitizenship {
 export enum IW4Status {
   Single = 'single',
   Married = 'married',
-  MarriedHigher = 'marriedHigher',
+  MarriedHigher = 'marriedSeparate',
 }
 
 export enum I9Status {
-  Citizen = 'citizen',
-  NonCitizen = 'noncitizen',
-  Permanent = 'permanent',
-  NonCitizen_Other = 'noncitizen_other',
+  Citizen = 'US Citizen',
+  NonCitizen = 'Noncitizen National',
+  Permanent = 'Lawful Permanent Resident',
+  NonCitizen_Other = 'Other Noncitizen',
 }
 
 // Sub-interfaces for better organization
@@ -62,8 +66,8 @@ export interface IGeneralInfo {
 
   // ─── Employment Preferences ───
   desiredEmploymentType?: EmploymentType;
-  desiredSalary?: number;
-  hourlyRate?: number;
+  desiredSalary?: string;
+  hourlyRate?: string;
   appliedPosition?: string;
   department?: string;
   overtime?: OvertimePreference;
@@ -76,11 +80,11 @@ export interface IGeneralInfo {
   previousSeparationReason?: string;
 
   // ─── Education ───
-  education?: IEducationInfo;
+  education?: IEducationInfo[];
 
   // ─── Other Information ───
-  specialSkills?: string;
-  signature?: string;
+  specialSkills: string;
+  signature: string;
 }
 
 // ─── Direct Deposit Info ───
@@ -136,15 +140,13 @@ export interface IW4Info {
   lastName: string;
   ssn: string;
   address: string;
-  fmaritalStatus?: IW4Status; // maritalStaus..
-  acceptedTerms?: boolean; // required
-  childrenNo: number; // if your total income will be 200000.
+  maritalStatus?: IW4Status; // maritalStaus..
+  acceptedTerms?: boolean;
+  // required
+  qualifyingChildrenNo: number; // if your total income will be 200000.
   amount: number;
   childrenDepencyNo: number;
-  eachDepencyAmount: number;
   TotalDependencyAmount: number;
-  withHoldAmount: number;
-  deductedAmount: string;
   extraWithHoldingAmount: number;
   signature?: string;
   signatureDate?: string;
@@ -248,7 +250,7 @@ export interface IPersonalAutoInsuranceHistory {
 export interface IMovingTrafficViolation {
   offense: string;
   date: Date;
-  laction: string;
+  location: string;
   comment: string;
 }
 export interface IDrivingLicenceInfo {
@@ -258,35 +260,43 @@ export interface IDrivingLicenceInfo {
   personalAutoInsuranceHistory: IPersonalAutoInsuranceHistory;
   movingTrafficViolation: IMovingTrafficViolation[];
 }
-export interface IApplicantCarification {
+export interface IApplicantCartification {
   check: boolean;
   signature: string; //image or file;
   signatureDate: Date;
 }
+export interface IApplicantionCarification {
+  check: boolean;
+  signature: string; //image or file;
+  signatureDate?: Date;
+}
 export interface IAccidentProcedure {
+  check: boolean;
   signature: string; //image or file;
   signatureDate: Date;
 }
 export interface ISubmittalPolicyInfo {
   check: boolean;
-  signature: string; //image
-  signatureDate: Date;
+  name: string;
 }
 export interface ISubmittalpolicy {
   submittalPolicyDirectUnderstand: ISubmittalPolicyInfo;
   submittalPolicyExplainUnderstand: ISubmittalPolicyInfo;
+  check: boolean;
+  signature: string;
 }
 // Main interface for all employee onboarding data
 export interface ITemporaryFormData {
+  userId: Types.ObjectId;
   generalInfo: IGeneralInfo;
-  employeeInfo: IEmployeeInfo;
-  drivingLicenceInfo: IDrivingLicenceInfo;
-  applicantCarification: IApplicantCarification;
-  substanceAbusepolicy: string; // image
-  accidentProcedure: IAccidentProcedure;
-  submittalPolicy: ISubmittalpolicy;
-  bankForm: IDirectDepositInfo;
-  i9Form: I9Info;
-  w4Form: IW4Info;
+  employeeInfo?: IEmployeeInfo;
+  drivingLicenceInfo?: IDrivingLicenceInfo;
+  applicantCartification?: IApplicantCartification;
+  applicationCarification?: IApplicantionCarification;
+  accidentProcedure?: IAccidentProcedure;
+  submittalPolicy?: ISubmittalpolicy;
+  bankForm?: IDirectDepositInfo;
+  i9Form?: I9Info;
+  w4Form?: IW4Info;
   citizenShipForm: ICitizenShip;
 }

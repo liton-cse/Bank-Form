@@ -25,20 +25,20 @@ export function cleanFormDataSpace(
       const trimmed = data.trim();
 
       // Convert to boolean
-      const lower = trimmed.toLowerCase();
-      if (['true', 'false', 'yes', 'no'].includes(lower)) {
-        return lower === 'true' || lower === 'yes';
-      }
+      // const lower = trimmed.toLowerCase();
+      // if (['true', 'false', 'yes', 'no'].includes(lower)) {
+      //   return lower === 'true' || lower === 'yes';
+      // }
 
       // Convert to number (if valid)
-      if (
-        !isNaN(Number(trimmed)) &&
-        trimmed !== '' &&
-        !trimmed.includes('-') &&
-        !trimmed.includes('/')
-      ) {
-        return Number(trimmed);
-      }
+      // if (
+      //   !isNaN(Number(trimmed)) &&
+      //   trimmed !== '' &&
+      //   !trimmed.includes('-') &&
+      //   !trimmed.includes('/')
+      // ) {
+      //   return Number(trimmed);
+      // }
 
       return trimmed; // fallback to plain trimmed string
     }

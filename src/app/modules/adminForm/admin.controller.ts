@@ -9,11 +9,14 @@ import { getSingleFilePath } from '../../../shared/getFilePath';
 const createAdminForm = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const image = getSingleFilePath(req.files, 'image');
+      // const image = getSingleFilePath(req.files, 'image');
+      // console.log(req.files);
+      const image = `/image/${req.body.image}`;
       const formData = {
         ...req.body,
         receivedBy: image,
       };
+      console.log(formData);
       const result = await AdminFormService.createAdminForm(formData);
 
       sendResponse(res, {

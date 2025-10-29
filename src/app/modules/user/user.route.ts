@@ -58,4 +58,7 @@ router.get(
   UserController.getYearlyUserStats
 );
 
+// Update employee_status
+router.put('/:id/status', UserController.changeEmployeeStatus);
+
 export const UserRoutes = router;

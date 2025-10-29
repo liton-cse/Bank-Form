@@ -4,7 +4,12 @@ import { model, Schema } from 'mongoose';
 import config from '../../../config';
 import { USER_ROLES } from '../../../enums/user';
 import ApiError from '../../../errors/ApiError';
-import { EMPLOYEE_ROLES, IUser, UserModal } from './user.interface';
+import {
+  EMPLOYEE_ROLES,
+  IUser,
+  UserModal,
+  EMPLOYEE_STUTUS,
+} from './user.interface';
 import { object } from 'zod';
 
 const userSchema = new Schema<IUser, UserModal>(
@@ -39,6 +44,11 @@ const userSchema = new Schema<IUser, UserModal>(
       select: 0,
       minlength: 8,
     },
+    employee_status: {
+      type: String,
+      enum: Object.values(EMPLOYEE_STUTUS),
+      default: EMPLOYEE_STUTUS.PENDING,
+    },
     image: {
       type: String,
       default: 'https://i.ibb.co/z5YHLV9/profile.png',
@@ -50,7 +60,7 @@ const userSchema = new Schema<IUser, UserModal>(
     },
     verified: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     authentication: {
       type: {
@@ -105,6 +115,7 @@ userSchema.pre('save', async function (next) {
     this.password,
     Number(config.bcrypt_salt_rounds)
   );
+  console.log(this.password);
   next();
 });
 

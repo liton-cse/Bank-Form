@@ -1,18 +1,18 @@
 // enums/admin.enum.ts
 export enum CHECK_ONE {
-  NEW_HIRED = 'new_hired',
-  REHIRED = 'rehired',
+  NEW_HIRED = 'newHire',
+  REHIRED = 'rehire',
 }
 
 export enum JOB_STATUS {
-  FULL_TIME = 'full_time',
-  PART_TIME = 'part_time',
+  FULL_TIME = 'fullTime',
+  PART_TIME = 'partTime',
 }
 
 export enum PAY_RATE {
   HOURLY = 'hourly',
-  OT_EXEMPT = 'o.t_exempt',
-  OT_NON_EXEMPT = 'o.t_non_exempt',
+  OT_EXEMPT = 'salaryExempt',
+  OT_NON_EXEMPT = 'salaryNonExempt',
 }
 
 export interface IAdminForm {

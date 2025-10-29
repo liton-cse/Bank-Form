@@ -14,6 +14,7 @@ import { paginateQuery } from '../../../util/pagination';
 const createUserToDB = async (payload: Partial<IUser>): Promise<IUser> => {
   //set role
   payload.role = USER_ROLES.USER;
+  console.log(payload);
   const createUser = await User.create(payload);
   if (!createUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');
@@ -82,7 +83,8 @@ const filterEmployeesByRole = async (
   page: number,
   limit: number
 ) => {
-  return paginateQuery(User, { employee_role }, page, limit);
+  const projection = 'firstName lastName email';
+  return paginateQuery(User, { employee_role }, page, limit, projection);
 };
 
 //search the user with first name and last name or both,,,
@@ -132,10 +134,16 @@ const getUserStats = async () => {
   ] = await Promise.all([
     User.countDocuments(baseFilter),
     User.countDocuments({ ...baseFilter, ...lastMonthRange }),
-    User.countDocuments({ employee_role: 'Intern' }),
-    User.countDocuments({ employee_role: 'Intern', ...lastMonthRange }),
-    User.countDocuments({ employee_role: 'Temporary' }),
-    User.countDocuments({ employee_role: 'Temporary', ...lastMonthRange }),
+    User.countDocuments({ employee_role: 'Fit2Lead Intern' }),
+    User.countDocuments({
+      employee_role: 'Fit2Lead Intern',
+      ...lastMonthRange,
+    }),
+    User.countDocuments({ employee_role: 'Temporary Employee' }),
+    User.countDocuments({
+      employee_role: 'Temporary Employee',
+      ...lastMonthRange,
+    }),
   ]);
 
   // Calculate all percentages
@@ -150,14 +158,14 @@ const getUserStats = async () => {
   );
 
   // Return a clean response object
-  return {
-    totalUsers,
-    totalIntern,
-    totalTemporary,
-    totalUsersPercentage,
-    internUsersPercentage,
-    temporaryUsersPercentage,
-  };
+  return [
+    { totalUsers, totalUsersPercentage },
+    { totalIntern, internUsersPercentage },
+    {
+      totalTemporary,
+      temporaryUsersPercentage,
+    },
+  ];
 };
 
 //provide yearly data..
@@ -176,7 +184,7 @@ const getYearlyUserStats = async (year: number) => {
     {
       $match: {
         createdAt: { $gte: startOfYear, $lt: endOfYear },
-        employee_role: { $in: ['Intern', 'Temporary'] },
+        employee_role: { $in: ['Fit2Lead Intern', 'Temporary Employee'] },
       },
     },
     {
@@ -220,12 +228,32 @@ const getYearlyUserStats = async (year: number) => {
     const { month, role } = _id;
     if (!isCurrentYear || month <= currentMonth) {
       const monthIndex = month - 1;
-      if (role === 'Intern') data[monthIndex].intern = count;
-      if (role === 'Temporary') data[monthIndex].temporary = count;
+      if (role === 'Fit2Lead Intern') data[monthIndex].intern = count;
+      if (role === 'Temporary Employee') data[monthIndex].temporary = count;
     }
   });
 
   return data;
+};
+
+// update the employee status..
+const updateEmployeeStatus = async (userId: string, status: string) => {
+  // Make sure status is valid enum
+  const validStatuses = ['pending', 'approve', 'reject'];
+  if (!validStatuses.includes(status)) {
+    throw new Error(`Invalid status: ${status}`);
+  }
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { employee_status: status },
+    { new: true }
+  );
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return user;
 };
 
 export const UserService = {
@@ -236,4 +264,5 @@ export const UserService = {
   searchEmployees,
   getUserStats,
   getYearlyUserStats,
+  updateEmployeeStatus,
 };

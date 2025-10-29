@@ -4,10 +4,15 @@ import mongoose, { Schema, Document } from 'mongoose';
 const EmploymentType = ['Intern', 'Temporary'];
 const OvertimePreference = ['Yes', 'No'];
 const GraduationStatus = ['Graduated', 'Not Graduate'];
-const typeStatus = ['Yes', 'No'];
+const TypeStatus = ['Yes', 'No'];
 const ICitizenship = ['citizen', 'resident', 'workauth'];
-const IW4Status = ['single', 'married', 'marriedHigher'];
-const I9Status = ['citizen', 'noncitizen', 'permanent', 'noncitizen_other'];
+const IW4Status = ['single', 'married', 'marriedSeparate'];
+const I9Status = [
+  'US Citizen',
+  'Noncitizen National',
+  'Lawful Permanent Resident',
+  'Other Noncitizen',
+];
 
 // ─── Sub-schemas ───
 const ContactInfoSchema = new Schema(
@@ -21,11 +26,12 @@ const ContactInfoSchema = new Schema(
 
 const EducationInfoSchema = new Schema(
   {
-    schoolName: String,
+    level: String,
+    name: String,
     major: String,
     graduationStatus: { type: String, enum: GraduationStatus },
     yearsCompleted: Number,
-    honorsReceived: Boolean,
+    honorsReceived: String,
   },
   { _id: false }
 );
@@ -34,19 +40,16 @@ const BankAccountSchema = new Schema(
   {
     bankName: String,
     state: String,
-    transitNo: String,
-    accountNo: String,
-    depositAmount: Number,
-    depositPercentage: { type: Number, required: true },
-    accountType: {
-      type: String,
-      enum: ['Checking', 'Savings'],
-      required: true,
-    },
+    transitNo: Number,
+    accountNo: Number,
+    depositType: { type: String, enum: ['full', 'partial'] },
+    depositPercentage: Number,
+    accountType: { type: String, enum: ['Checking', 'Savings'] },
   },
   { _id: false }
 );
 
+// ─── General Info ───
 const GeneralInfoSchema = new Schema(
   {
     firstName: String,
@@ -60,8 +63,8 @@ const GeneralInfoSchema = new Schema(
     address: String,
     emergencyContact: ContactInfoSchema,
     desiredEmploymentType: { type: String, enum: EmploymentType },
-    desiredSalary: Number,
-    hourlyRate: Number,
+    desiredSalary: String,
+    hourlyRate: String,
     appliedPosition: String,
     department: String,
     overtime: { type: String, enum: OvertimePreference },
@@ -70,13 +73,14 @@ const GeneralInfoSchema = new Schema(
     previousApplicationDate: String,
     previouslyEmployed: Boolean,
     previousSeparationReason: String,
-    education: EducationInfoSchema,
+    education: [EducationInfoSchema],
     specialSkills: String,
     signature: String,
   },
   { _id: false }
 );
 
+// ─── Direct Deposit ───
 const DirectDepositInfoSchema = new Schema(
   {
     name: String,
@@ -90,7 +94,7 @@ const DirectDepositInfoSchema = new Schema(
   { _id: false }
 );
 
-// ─── I9 Forms ───
+// ─── I9 Form ───
 const BaseI9InfoSchema = new Schema(
   {
     lastName: String,
@@ -119,7 +123,7 @@ const I9InfoSchema = new Schema(
   { _id: false }
 );
 
-// ─── W4 Schema ───
+// ─── W4 Form ───
 const W4InfoSchema = new Schema(
   {
     firstName: String,
@@ -127,15 +131,12 @@ const W4InfoSchema = new Schema(
     lastName: String,
     ssn: String,
     address: String,
-    fmaritalStatus: { type: String, enum: IW4Status },
+    maritalStatus: { type: String, enum: IW4Status },
     acceptedTerms: Boolean,
-    childrenNo: Number,
+    qualifyingChildrenNo: Number,
     amount: Number,
     childrenDepencyNo: Number,
-    eachDepencyAmount: Number,
     TotalDependencyAmount: Number,
-    withHoldAmount: Number,
-    deductedAmount: String,
     extraWithHoldingAmount: Number,
     signature: String,
     signatureDate: String,
@@ -143,7 +144,7 @@ const W4InfoSchema = new Schema(
   { _id: false }
 );
 
-// ─── Citizenship Documents ───
+// ─── Citizenship Docs ───
 const CitizenShipSchema = new Schema(
   {
     citizenshipStatus: { type: String, enum: ICitizenship },
@@ -158,7 +159,7 @@ const CitizenShipSchema = new Schema(
 // ─── Employee Info ───
 const TerminationInfoSchema = new Schema(
   {
-    terminationStatus: { type: String, enum: typeStatus },
+    terminationStatus: { type: String, enum: TypeStatus },
     terminationCount: Number,
   },
   { _id: false }
@@ -166,7 +167,7 @@ const TerminationInfoSchema = new Schema(
 
 const ManualAgreementTerminationSchema = new Schema(
   {
-    terminatedByManualAgreement: { type: String, enum: typeStatus },
+    terminatedByManualAgreement: { type: String, enum: TypeStatus },
     terminationCount: Number,
   },
   { _id: false }
@@ -174,7 +175,7 @@ const ManualAgreementTerminationSchema = new Schema(
 
 const ResignationInsteadOfTerminationSchema = new Schema(
   {
-    resignedInsteadOfTerminated: { type: String, enum: typeStatus },
+    resignedInsteadOfTerminated: { type: String, enum: TypeStatus },
     resignationCount: Number,
   },
   { _id: false }
@@ -228,10 +229,10 @@ const EmployeeInfoSchema = new Schema(
   { _id: false }
 );
 
-// ─── Driving License Info ───
+// ─── Driving Licence Info ───
 const ValidDriverLicenseSchema = new Schema(
   {
-    hasDriverLicense: { type: String, enum: ['Yes', 'No'] },
+    hasDriverLicense: { type: String, enum: TypeStatus },
     licenseNo: Number,
     state: String,
     expirationDate: Date,
@@ -242,7 +243,7 @@ const ValidDriverLicenseSchema = new Schema(
 
 const LicenseSuspensionInfoSchema = new Schema(
   {
-    licenseSuspendedOrRevoked: { type: String, enum: ['Yes', 'No'] },
+    licenseSuspendedOrRevoked: { type: String, enum: TypeStatus },
     reason: String,
   },
   { _id: false }
@@ -250,7 +251,7 @@ const LicenseSuspensionInfoSchema = new Schema(
 
 const PersonalAutoInsuranceSchema = new Schema(
   {
-    hasPersonalAutoInsurance: { type: String, enum: ['Yes', 'No'] },
+    hasPersonalAutoInsurance: { type: String, enum: TypeStatus },
     reason: String,
   },
   { _id: false }
@@ -258,7 +259,7 @@ const PersonalAutoInsuranceSchema = new Schema(
 
 const PersonalAutoInsuranceHistorySchema = new Schema(
   {
-    insuranceDeniedOrTerminated: { type: String, enum: ['Yes', 'No'] },
+    insuranceDeniedOrTerminated: { type: String, enum: TypeStatus },
     reason: String,
   },
   { _id: false }
@@ -268,7 +269,7 @@ const MovingTrafficViolationSchema = new Schema(
   {
     offense: String,
     date: Date,
-    laction: String,
+    location: String,
     comment: String,
   },
   { _id: false }
@@ -285,8 +286,17 @@ const DrivingLicenceInfoSchema = new Schema(
   { _id: false }
 );
 
-// ─── Applicant Clarification ───
-const ApplicantCarificationSchema = new Schema(
+// ─── Applicant Clarifications ───
+const ApplicantCartificationSchema = new Schema(
+  {
+    check: Boolean,
+    signature: String,
+    signatureDate: Date,
+  },
+  { _id: false }
+);
+
+const ApplicationCarificationSchema = new Schema(
   {
     check: Boolean,
     signature: String,
@@ -297,6 +307,7 @@ const ApplicantCarificationSchema = new Schema(
 
 const AccidentProcedureSchema = new Schema(
   {
+    check: Boolean,
     signature: String,
     signatureDate: Date,
   },
@@ -306,8 +317,7 @@ const AccidentProcedureSchema = new Schema(
 const SubmittalPolicyInfoSchema = new Schema(
   {
     check: Boolean,
-    signature: String,
-    signatureDate: Date,
+    name: String,
   },
   { _id: false }
 );
@@ -316,18 +326,21 @@ const SubmittalPolicySchema = new Schema(
   {
     submittalPolicyDirectUnderstand: SubmittalPolicyInfoSchema,
     submittalPolicyExplainUnderstand: SubmittalPolicyInfoSchema,
+    check: Boolean,
+    signature: String,
   },
   { _id: false }
 );
 
-// ─── Main Form Schema ───
+// ─── Main Schema ───
 const TemporaryFormSchema = new Schema(
   {
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     generalInfo: GeneralInfoSchema,
     employeeInfo: EmployeeInfoSchema,
     drivingLicenceInfo: DrivingLicenceInfoSchema,
-    applicantCarification: ApplicantCarificationSchema,
-    substanceAbusepolicy: String,
+    applicantCartification: ApplicantCartificationSchema,
+    applicationCarification: ApplicationCarificationSchema,
     accidentProcedure: AccidentProcedureSchema,
     submittalPolicy: SubmittalPolicySchema,
     bankForm: DirectDepositInfoSchema,

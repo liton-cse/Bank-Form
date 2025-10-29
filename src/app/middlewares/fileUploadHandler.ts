@@ -39,7 +39,9 @@ const fileUploadHandler = () => {
         case 'employeeSignature8':
         case 'employeeSignature9':
         case 'employeeSignature10':
+        case 'supervisorSignature':
         case 'directDepositImage':
+        case 'timeSheetPdfOrImage':
         case 'photoIdImage':
         case 'socialSecurityImage':
         case 'residentCardImage':
@@ -130,6 +132,8 @@ const fileUploadHandler = () => {
     { name: 'employeeSignature7', maxCount: 3 },
     { name: 'employeeSignature8', maxCount: 3 },
     { name: 'employeeSignature9', maxCount: 3 },
+    { name: 'supervisorSignature', maxCount: 3 },
+    { name: 'timeSheetPdfOrImage', maxCount: 3 },
     { name: 'directDepositImage', maxCount: 3 },
     { name: 'photoIdImage', maxCount: 3 },
     { name: 'socialSecurityImage', maxCount: 3 },

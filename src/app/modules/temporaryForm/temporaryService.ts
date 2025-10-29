@@ -1,6 +1,6 @@
 import { TemporaryFormModel } from './temporary.model';
 import { ITemporaryFormData } from './temporary.interface'; // optional if you have your interfaces
-import { flattenObject, IFolderName } from '../../../shared/getFilePath';
+// import { flattenObject, IFolderName } from '../../../shared/getFilePath';
 
 const createForm = async (data: ITemporaryFormData) => {
   const temporary = await TemporaryFormModel.create(data);
@@ -8,16 +8,16 @@ const createForm = async (data: ITemporaryFormData) => {
 };
 
 // Get all forms
-const getAllForms = async () => {
-  return await TemporaryFormModel.find().sort({ createdAt: -1 });
+const getAllForms = async (userId: string) => {
+  return await TemporaryFormModel.findOne({ userId }).sort({ createdAt: -1 });
 };
 
 // Get form by ID
-const getFormById = async (id: string) => {
-  const form = await TemporaryFormModel.findById(id);
-  if (!form) throw new Error('Form not found');
-  return form;
-};
+// const getFormById = async (id: string, userId: string) => {
+//   const form = await TemporaryFormModel.findOne({ _id: id, userId });
+//   if (!form) throw new Error('Form not found');
+//   return form;
+// };
 
 // Update form by ID
 const updateFormService = async (
@@ -43,8 +43,10 @@ const updateFormService = async (
   bodyData.w4Form = bodyData.w4Form || ({} as any);
   bodyData.generalInfo = bodyData.generalInfo || ({} as any);
   bodyData.employeeInfo = bodyData.employeeInfo || ({} as any);
-  bodyData.applicantCarification =
-    bodyData.applicantCarification || ({} as any);
+  bodyData.applicantCartification =
+    bodyData.applicantCartification || ({} as any);
+  bodyData.applicationCarification =
+    bodyData.applicationCarification || ({} as any);
   bodyData.drivingLicenceInfo = bodyData.drivingLicenceInfo || ({} as any);
   bodyData.accidentProcedure = bodyData.accidentProcedure || ({} as any);
   if (!bodyData.submittalPolicy) {
@@ -112,14 +114,17 @@ const updateFormService = async (
     });
   }
   //application Clarification
-  if (bodyData.applicantCarification) {
-    mapFilesToTarget(bodyData.applicantCarification, {
+  if (bodyData.applicantCartification) {
+    mapFilesToTarget(bodyData.applicantCartification, {
       signature: { image: 'employeeSignature2' },
     });
   }
   //subsity policy
-
-  bodyData.substanceAbusepolicy = image;
+  if (bodyData.applicantCartification) {
+    mapFilesToTarget(bodyData.applicantCartification, {
+      signature: { image: 'employeeSignature3' },
+    });
+  }
 
   //accidentProcedure..
   if (bodyData.accidentProcedure) {
@@ -166,7 +171,7 @@ const deleteForm = async (id: string) => {
 export const temporaryFormService = {
   createForm,
   getAllForms,
-  getFormById,
+  // getFormById,
   updateFormService,
   deleteForm,
 };

@@ -28,12 +28,13 @@ export const paginateQuery = async <T>(
   filter: FilterQuery<T>,
   page: number,
   limit: number,
+  projection = '',
   sort: Record<string, 1 | -1> = { createdAt: -1 }
 ): Promise<PaginatedResponse<T>> => {
   const skip = (page - 1) * limit;
 
   const [total, data] = await Promise.all([
-    model.countDocuments(filter),
+    model.countDocuments(filter).select(projection),
     model.find(filter).skip(skip).limit(limit).sort(sort),
   ]);
 

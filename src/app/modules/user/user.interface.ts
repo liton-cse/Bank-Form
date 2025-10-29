@@ -1,9 +1,14 @@
 import { Model } from 'mongoose';
 import { USER_ROLES } from '../../../enums/user';
 export enum EMPLOYEE_ROLES {
-  INTERN = 'Intern',
-  TEMPORARY = 'Temporary',
+  INTERN = 'Fit2Lead Intern',
+  TEMPORARY = 'Temporary Employee',
   ADMINISTRATOR = 'Administrator',
+}
+export enum EMPLOYEE_STUTUS {
+  PENDING = 'pending',
+  APPROVE = 'approve',
+  REJECT = 'reject',
 }
 
 export type IUser = {
@@ -14,10 +19,11 @@ export type IUser = {
   contact: string;
   email: string;
   password: string;
+  employee_status: EMPLOYEE_STUTUS;
   location: string;
   image?: string;
   status: 'active' | 'delete';
-  verified: boolean;
+  verified?: boolean;
   authentication?: {
     isResetPassword: boolean;
     oneTimeCode: number;
