@@ -14,7 +14,11 @@ app.use(Morgan.errorHandler);
 //body parser
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://cbyrac-inc-phi.vercel.app'],
+    origin: [
+      'http://localhost:5173',
+      'https://cbyrac-inc-rose.vercel.app',
+      'https://cbyrac-inc-git-main-litons-projects.vercel.app',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })

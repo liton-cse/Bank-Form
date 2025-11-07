@@ -6,13 +6,18 @@ import fileUploadHandler from '../../middlewares/fileUploadHandler';
 
 const router = express.Router();
 
-router.post('/intern', fileUploadHandler(), InternController.createIntern);
+router.post(
+  '/intern',
+  auth(USER_ROLES.USER),
+  fileUploadHandler(),
+  InternController.createIntern
+);
 
-router.get('/intern', InternController.getAllInterns);
+router.get('/intern', auth(USER_ROLES.USER), InternController.getAllInterns);
 
 router.get('/intern/:id', InternController.getIntern);
 
-router.patch('/intern/:id', fileUploadHandler(), InternController.updateIntern);
+// router.patch('/intern/:id', fileUploadHandler(), InternController.updateIntern);
 
 router.delete('/intern/:id', InternController.deleteIntern);
 

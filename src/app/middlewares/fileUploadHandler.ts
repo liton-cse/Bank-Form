@@ -29,24 +29,13 @@ const fileUploadHandler = () => {
       let uploadDir: string;
 
       switch (file.fieldname) {
-        case 'employeeSignature1':
-        case 'employeeSignature2':
-        case 'employeeSignature3':
-        case 'employeeSignature4':
-        case 'employeeSignature5':
-        case 'employeeSignature6':
-        case 'employeeSignature7':
-        case 'employeeSignature8':
-        case 'employeeSignature9':
-        case 'employeeSignature10':
-        case 'supervisorSignature':
-        case 'directDepositImage':
-        case 'timeSheetPdfOrImage':
-        case 'photoIdImage':
-        case 'socialSecurityImage':
-        case 'residentCardImage':
-        case 'workAuthorizationImage':
         case 'image':
+        case 'socialSecurityCard':
+        case 'residentCard':
+        case 'photoId':
+        case 'workAuthorizationDocument':
+        case 'signature':
+        case 'accountFile':
           uploadDir = path.join(baseUploadDir, 'image');
           break;
 
@@ -54,11 +43,6 @@ const fileUploadHandler = () => {
           uploadDir = path.join(baseUploadDir, 'media');
           break;
 
-        case 'directDepositPdf':
-        case 'photoIdPdf':
-        case 'socialSecurityPdf':
-        case 'residentCardPdf':
-        case 'workAuthorizationPdf':
         case 'doc':
           uploadDir = path.join(baseUploadDir, 'doc');
           break;
@@ -123,27 +107,12 @@ const fileUploadHandler = () => {
     { name: 'image', maxCount: 3 },
     { name: 'media', maxCount: 3 },
     { name: 'doc', maxCount: 3 },
-    { name: 'employeeSignature1', maxCount: 3 },
-    { name: 'employeeSignature2', maxCount: 3 },
-    { name: 'employeeSignature3', maxCount: 3 },
-    { name: 'employeeSignature4', maxCount: 3 },
-    { name: 'employeeSignature5', maxCount: 3 },
-    { name: 'employeeSignature6', maxCount: 3 },
-    { name: 'employeeSignature7', maxCount: 3 },
-    { name: 'employeeSignature8', maxCount: 3 },
-    { name: 'employeeSignature9', maxCount: 3 },
-    { name: 'supervisorSignature', maxCount: 3 },
-    { name: 'timeSheetPdfOrImage', maxCount: 3 },
-    { name: 'directDepositImage', maxCount: 3 },
-    { name: 'photoIdImage', maxCount: 3 },
-    { name: 'socialSecurityImage', maxCount: 3 },
-    { name: 'residentCardImage', maxCount: 3 },
-    { name: 'workAuthorizationImage', maxCount: 3 },
-    { name: 'directDepositPdf', maxCount: 3 },
-    { name: 'photoIdPdf', maxCount: 3 },
-    { name: 'socialSecurityPdf', maxCount: 3 },
-    { name: 'residentCardPdf', maxCount: 3 },
-    { name: 'workAuthorizationPdf', maxCount: 3 },
+    { name: 'workAuthorizationDocument', maxCount: 3 },
+    { name: 'residentCard', maxCount: 3 },
+    { name: 'photoId', maxCount: 3 },
+    { name: 'socialSecurityCard', maxCount: 3 },
+    { name: 'signature', maxCount: 3 },
+    { name: 'accountFile', maxCount: 3 },
   ]);
 
   return upload;

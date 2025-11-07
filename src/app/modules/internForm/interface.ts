@@ -1,3 +1,5 @@
+import { Types } from 'mongoose';
+
 export type EmploymentType = 'Intern' | 'Temp Employee';
 export type OvertimePreference = 'Yes' | 'No';
 export type GraduationStatus = 'Graduated' | 'Not Graduated';
@@ -14,7 +16,7 @@ export interface IEducationInfo {
   major?: string;
   graduationStatus?: GraduationStatus;
   yearsCompleted?: number;
-  honorsReceived?: boolean;
+  honorsReceived?: string;
 }
 
 export interface IBankAccount {
@@ -35,14 +37,14 @@ export enum ICitizenship {
 export enum IW4Status {
   Single = 'single',
   Married = 'married',
-  MarriedHigher = 'divorced',
+  MarriedHigher = 'marriedSeparate',
 }
 
 export enum I9Status {
-  Citizen = 'citizen',
-  NonCitizen = 'noncitizen',
-  Permanent = 'permanent',
-  NonCitizen_Other = 'noncitizen_other',
+  Citizen = 'US Citizen',
+  NonCitizen = 'Noncitizen National',
+  Permanent = 'Lawful Permanent Resident',
+  NonCitizen_Other = 'Other Noncitizen',
 }
 
 // Sub-interfaces for better organization
@@ -80,7 +82,6 @@ export interface IGeneralInfo {
 
   // ─── Other Information ───
   specialSkills?: string;
-  signature?: string;
 }
 
 // ─── Direct Deposit Info ───
@@ -89,8 +90,6 @@ export interface IDirectDepositInfo {
   ssn: string;
   checkingAccount: IBankAccount & { accountType: BankAccountType };
   savingsAccount?: IBankAccount & { accountType: BankAccountType };
-  accountFile?: string; //image oir pdf
-  signature?: string; // image...
   signatureDate?: string;
 }
 
@@ -105,7 +104,6 @@ export interface IBaseI9Info {
   ssn: string;
   email: string;
   phone: string;
-  signature?: string; // image
   signatureDate?: string;
 }
 // Citizen or NonCitizen: no extra required fields
@@ -136,7 +134,7 @@ export interface IW4Info {
   lastName: string;
   ssn: string;
   address: string;
-  fmaritalStatus?: IW4Status; // maritalStaus..
+  maritalStatus?: IW4Status; // maritalStaus..
   acceptedTerms?: boolean; // required
   childrenNo: number; // if your total income will be 200000.
   amount: number;
@@ -146,40 +144,21 @@ export interface IW4Info {
   withHoldAmount: number;
   deductedAmount: string;
   extraWithHoldingAmount: number;
-  signature?: string;
   signatureDate?: string;
 }
 
-export type CitizenDocuments = {
-  citizenshipStatus: ICitizenship.Citizen;
-  photoID: string; // Driver's License or Passport
-  socialSecurityCard: string;
-};
-
-export interface ResidentDocuments {
-  citizenshipStatus: ICitizenship.Resident;
-  photoID: string; // Driver's License or Passport
-  socialSecurityCard: string;
-  residentCard: string;
-}
-
-export interface WorkAuthDocuments {
-  citizenshipStatus: ICitizenship.WorkAuthorization;
-  photoID: string; // Driver's License or Passport
-  socialSecurityCard: string;
-  workAuthorizationDocument: string;
-}
-
-export type ICitizenShip =
-  | CitizenDocuments
-  | ResidentDocuments
-  | WorkAuthDocuments;
-
 // Main interface for all employee onboarding data
 export interface IInternFormData {
+  userId: Types.ObjectId;
   generalInfo: IGeneralInfo;
   bankForm: IDirectDepositInfo;
   i9Form: I9Info;
   w4Form: IW4Info;
-  citizenShipForm: ICitizenShip;
+  citizenShipForm: string;
+  signature: string;
+  photoId?: string | undefined;
+  accountFile: string;
+  residentCard?: string | undefined;
+  socialSecurityCard?: string | undefined;
+  workAuthorizationDocument?: string | undefined;
 }

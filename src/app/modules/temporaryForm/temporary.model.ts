@@ -75,7 +75,6 @@ const GeneralInfoSchema = new Schema(
     previousSeparationReason: String,
     education: [EducationInfoSchema],
     specialSkills: String,
-    signature: String,
   },
   { _id: false }
 );
@@ -87,8 +86,6 @@ const DirectDepositInfoSchema = new Schema(
     ssn: String,
     checkingAccount: BankAccountSchema,
     savingsAccount: BankAccountSchema,
-    accountFile: String,
-    signature: String,
     signatureDate: String,
   },
   { _id: false }
@@ -106,7 +103,6 @@ const BaseI9InfoSchema = new Schema(
     ssn: String,
     email: String,
     phone: String,
-    signature: String,
     signatureDate: String,
   },
   { _id: false }
@@ -138,23 +134,12 @@ const W4InfoSchema = new Schema(
     childrenDepencyNo: Number,
     TotalDependencyAmount: Number,
     extraWithHoldingAmount: Number,
-    signature: String,
     signatureDate: String,
   },
   { _id: false }
 );
 
 // ─── Citizenship Docs ───
-const CitizenShipSchema = new Schema(
-  {
-    citizenshipStatus: { type: String, enum: ICitizenship },
-    photoID: String,
-    socialSecurityCard: String,
-    residentCard: String,
-    workAuthorizationDocument: String,
-  },
-  { _id: false }
-);
 
 // ─── Employee Info ───
 const TerminationInfoSchema = new Schema(
@@ -290,7 +275,6 @@ const DrivingLicenceInfoSchema = new Schema(
 const ApplicantCartificationSchema = new Schema(
   {
     check: Boolean,
-    signature: String,
     signatureDate: Date,
   },
   { _id: false }
@@ -299,7 +283,6 @@ const ApplicantCartificationSchema = new Schema(
 const ApplicationCarificationSchema = new Schema(
   {
     check: Boolean,
-    signature: String,
     signatureDate: Date,
   },
   { _id: false }
@@ -308,7 +291,6 @@ const ApplicationCarificationSchema = new Schema(
 const AccidentProcedureSchema = new Schema(
   {
     check: Boolean,
-    signature: String,
     signatureDate: Date,
   },
   { _id: false }
@@ -327,7 +309,6 @@ const SubmittalPolicySchema = new Schema(
     submittalPolicyDirectUnderstand: SubmittalPolicyInfoSchema,
     submittalPolicyExplainUnderstand: SubmittalPolicyInfoSchema,
     check: Boolean,
-    signature: String,
   },
   { _id: false }
 );
@@ -346,7 +327,13 @@ const TemporaryFormSchema = new Schema(
     bankForm: DirectDepositInfoSchema,
     i9Form: I9InfoSchema,
     w4Form: W4InfoSchema,
-    citizenShipForm: CitizenShipSchema,
+    citizenShipForm: String,
+    signature: String,
+    photoId: String,
+    accountFile: String,
+    residentCard: String,
+    socialSecurityCard: String,
+    workAuthorizationDocument: String,
   },
   { timestamps: true }
 );

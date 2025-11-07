@@ -17,7 +17,7 @@ const EducationInfoSchema = new Schema(
     major: String,
     graduationStatus: { type: String, enum: ['Graduated', 'Not Graduated'] },
     yearsCompleted: Number,
-    honorsReceived: Boolean,
+    honorsReceived: String,
   },
   { _id: false }
 );
@@ -112,11 +112,18 @@ const GeneralInfoSchema = new Schema(
 // ─── Main Schema ───
 const InternFormSchema = new Schema<IInternFormData & Document>(
   {
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     generalInfo: { type: GeneralInfoSchema, required: true }, // safe now
     bankForm: { type: DirectDepositSchema, required: true },
     i9Form: { type: I9Schema, required: true },
     w4Form: { type: W4Schema, required: true },
-    citizenShipForm: { type: DocumentInfoSchema, required: true },
+    citizenShipForm: String,
+    signature: String,
+    photoId: String,
+    accountFile: String,
+    residentCard: String,
+    socialSecurityCard: String,
+    workAuthorizationDocument: String,
   },
   { timestamps: true }
 );

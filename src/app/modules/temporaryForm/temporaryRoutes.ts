@@ -20,11 +20,11 @@ router.get(
   temporaryFormController.getAllForms
 );
 router.get('/pdf-generator', auth(USER_ROLES.USER), generateCbyracPdf);
-router.get(
-  '/temporary/:id',
-  auth(USER_ROLES.USER),
-  temporaryFormController.getFormById
-);
+// router.get(
+//   '/temporary/:id',
+//   auth(USER_ROLES.USER),
+//   temporaryFormController.getFormById
+// );
 // router.patch(
 //   '/temporary/update/:id',
 //   fileUploadHandler(),

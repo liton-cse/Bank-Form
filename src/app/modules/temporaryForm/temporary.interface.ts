@@ -84,7 +84,6 @@ export interface IGeneralInfo {
 
   // ─── Other Information ───
   specialSkills: string;
-  signature: string;
 }
 
 // ─── Direct Deposit Info ───
@@ -93,8 +92,6 @@ export interface IDirectDepositInfo {
   ssn: string;
   checkingAccount: IBankAccount & { accountType: BankAccountType };
   savingsAccount?: IBankAccount & { accountType: BankAccountType };
-  accountFile?: string; //image oir pdf
-  signature?: string; // image...
   signatureDate?: string;
 }
 
@@ -109,7 +106,6 @@ export interface IBaseI9Info {
   ssn: string;
   email: string;
   phone: string;
-  signature?: string; // image
   signatureDate?: string;
 }
 // Citizen or NonCitizen: no extra required fields
@@ -148,34 +144,8 @@ export interface IW4Info {
   childrenDepencyNo: number;
   TotalDependencyAmount: number;
   extraWithHoldingAmount: number;
-  signature?: string;
   signatureDate?: string;
 }
-
-export type CitizenDocuments = {
-  citizenshipStatus: ICitizenship.Citizen;
-  photoID: string; // Driver's License or Passport
-  socialSecurityCard: string;
-};
-
-export interface ResidentDocuments {
-  citizenshipStatus: ICitizenship.Resident;
-  photoID: string; // Driver's License or Passport
-  socialSecurityCard: string;
-  residentCard: string;
-}
-
-export interface WorkAuthDocuments {
-  citizenshipStatus: ICitizenship.WorkAuthorization;
-  photoID: string; // Driver's License or Passport
-  socialSecurityCard: string;
-  workAuthorizationDocument: string;
-}
-
-export type ICitizenShip =
-  | CitizenDocuments
-  | ResidentDocuments
-  | WorkAuthDocuments;
 
 // employee section..
 export interface ITerminationInfo {
@@ -262,17 +232,15 @@ export interface IDrivingLicenceInfo {
 }
 export interface IApplicantCartification {
   check: boolean;
-  signature: string; //image or file;
   signatureDate: Date;
 }
 export interface IApplicantionCarification {
   check: boolean;
-  signature: string; //image or file;
+
   signatureDate?: Date;
 }
 export interface IAccidentProcedure {
   check: boolean;
-  signature: string; //image or file;
   signatureDate: Date;
 }
 export interface ISubmittalPolicyInfo {
@@ -283,20 +251,25 @@ export interface ISubmittalpolicy {
   submittalPolicyDirectUnderstand: ISubmittalPolicyInfo;
   submittalPolicyExplainUnderstand: ISubmittalPolicyInfo;
   check: boolean;
-  signature: string;
 }
 // Main interface for all employee onboarding data
 export interface ITemporaryFormData {
   userId: Types.ObjectId;
   generalInfo: IGeneralInfo;
-  employeeInfo?: IEmployeeInfo;
-  drivingLicenceInfo?: IDrivingLicenceInfo;
-  applicantCartification?: IApplicantCartification;
-  applicationCarification?: IApplicantionCarification;
-  accidentProcedure?: IAccidentProcedure;
-  submittalPolicy?: ISubmittalpolicy;
-  bankForm?: IDirectDepositInfo;
-  i9Form?: I9Info;
-  w4Form?: IW4Info;
-  citizenShipForm: ICitizenShip;
+  employeeInfo: IEmployeeInfo;
+  drivingLicenceInfo: IDrivingLicenceInfo;
+  applicantCartification: IApplicantCartification;
+  applicationCarification: IApplicantionCarification;
+  accidentProcedure: IAccidentProcedure;
+  submittalPolicy: ISubmittalpolicy;
+  bankForm: IDirectDepositInfo;
+  i9Form: I9Info;
+  w4Form: IW4Info;
+  citizenShipForm: string;
+  signature: string;
+  photoId?: string | undefined;
+  accountFile: string;
+  residentCard?: string | undefined;
+  socialSecurityCard?: string | undefined;
+  workAuthorizationDocument?: string | undefined;
 }

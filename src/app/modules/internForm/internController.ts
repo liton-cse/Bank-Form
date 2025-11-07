@@ -3,104 +3,34 @@ import { InternService } from './internService';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { StatusCodes } from 'http-status-codes';
-import {
-  getAllUploadedFiles,
-  parseNestedFormData,
-} from '../../../shared/getFilePath';
-import { IFolderName } from '../../../shared/getFilePath';
+import { getSingleFile } from '../../../shared/getFilePath';
 import { IInternFormData } from './interface';
-import ApiError from '../../../errors/ApiError';
+import { convertToNestedObject } from '../../../helpers/convertToNestedObject';
 
 // Create Intern
+
 const createIntern = catchAsync(async (req: Request, res: Response) => {
-  // Parse nested fields correctly
-  const bodyData = parseNestedFormData(req.body);
-  console.log(bodyData);
-  const uploadedFilesRaw = getAllUploadedFiles(req.files);
-  const uploadedFiles = Object.fromEntries(
-    Object.entries(uploadedFilesRaw).filter(([_, v]) => v !== undefined)
-  ) as Record<IFolderName, string>;
-  // // Helper to map uploaded files (image preferred, then pdf)
-  const mapFilesToTarget = (
-    target: Record<string, any>,
-    mapping: Record<string, { image?: IFolderName; pdf?: IFolderName }>,
-    uploadedFiles: Record<string, string>
-  ) => {
-    if (!target) return;
+  const userId = req.user.id;
+  const nestedBody = convertToNestedObject(req.body);
+  const signature = getSingleFile(req.files, 'signature');
+  const accountFile = getSingleFile(req.files, 'accountFile');
+  const residentCard = getSingleFile(req.files, 'residentCard');
+  const socialSecurityCard = getSingleFile(req.files, 'socialSecurityCard');
+  const photoId = getSingleFile(req.files, 'photoId');
+  const workAuthorizationDocument = getSingleFile(
+    req.files,
+    'workAuthorizationDocument'
+  );
 
-    for (const key in mapping) {
-      const { image, pdf } = mapping[key];
-      const filePath = uploadedFiles[image!] || uploadedFiles[pdf!];
-      if (filePath) {
-        target[key] = filePath;
-      }
-    }
-  };
+  const bodyData: any = { ...nestedBody };
 
-  // CitizenShip form
-  if (bodyData.citizenShipForm) {
-    mapFilesToTarget(
-      bodyData.citizenShipForm,
-      {
-        photoID: { image: 'photoIdImage', pdf: 'photoIdPdf' },
-        socialSecurityCard: {
-          image: 'socialSecurityImage',
-          pdf: 'socialSecurityPdf',
-        },
-        residentCard: { image: 'residentCardImage', pdf: 'residentCardPdf' },
-        workAuthorizationDocument: {
-          image: 'workAuthorizationImage',
-          pdf: 'workAuthorizationPdf',
-        },
-      },
-      uploadedFiles
-    );
-  }
-
-  // Bank form
-  if (bodyData.bankForm) {
-    mapFilesToTarget(
-      bodyData.bankForm,
-      {
-        accountFile: { image: 'directDepositImage', pdf: 'directDepositPdf' },
-        signature: { image: 'employeeSignature2' },
-      },
-      uploadedFiles
-    );
-  }
-
-  // I9 form
-  if (bodyData.i9Form) {
-    mapFilesToTarget(
-      bodyData.i9Form,
-      {
-        signature: { image: 'employeeSignature3' },
-      },
-      uploadedFiles
-    );
-  }
-
-  // W4 form
-  if (bodyData.w4Form) {
-    mapFilesToTarget(
-      bodyData.w4Form,
-      {
-        signature: { image: 'employeeSignature4' },
-      },
-      uploadedFiles
-    );
-  }
-
-  // General Info
-  if (bodyData.generalInfo) {
-    mapFilesToTarget(
-      bodyData.generalInfo,
-      {
-        signature: { image: 'employeeSignature1' },
-      },
-      uploadedFiles
-    );
-  }
+  if (signature) bodyData.signature = signature;
+  if (accountFile) bodyData.accountFile = accountFile;
+  if (residentCard) bodyData.residentCard = residentCard;
+  if (photoId) bodyData.photoId = photoId;
+  if (socialSecurityCard) bodyData.socialSecurityCard = socialSecurityCard;
+  if (workAuthorizationDocument)
+    bodyData.workAuthorizationDocument = workAuthorizationDocument;
 
   // Save intern
   if (
@@ -113,6 +43,7 @@ const createIntern = catchAsync(async (req: Request, res: Response) => {
     console.error('Invalid intern data:', bodyData);
     throw new Error('Invalid form submission');
   }
+  bodyData.userId = userId;
   const intern = await InternService.createIntern(bodyData as IInternFormData);
   sendResponse(res, {
     success: true,
@@ -122,10 +53,11 @@ const createIntern = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// Get all Interns
 const getAllInterns = catchAsync(async (req: Request, res: Response) => {
-  const interns = await InternService.getAllIntern();
+  const userId = req.user.id;
 
+  const interns = await InternService.getAllIntern(userId);
+  console.log(interns);
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
@@ -146,34 +78,34 @@ const getIntern = catchAsync(async (req: Request, res: Response) => {
 });
 
 // Update Intern
-const updateIntern = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  // Parse nested form fields
-  const bodyData = parseNestedFormData(req.body);
-  const uploadedFilesRaw = getAllUploadedFiles(req.files);
-  const uploadedFiles = Object.fromEntries(
-    Object.entries(uploadedFilesRaw).filter(([_, v]) => v !== undefined)
-  ) as Record<IFolderName, string>;
+// const updateIntern = catchAsync(async (req: Request, res: Response) => {
+//   const { id } = req.params;
+//   // Parse nested form fields
+//   const bodyData = parseNestedFormData(req.body);
+//   const uploadedFilesRaw = getAllUploadedFiles(req.files);
+//   const uploadedFiles = Object.fromEntries(
+//     Object.entries(uploadedFilesRaw).filter(([_, v]) => v !== undefined)
+//   ) as Record<IFolderName, string>;
 
-  // Update intern in DB
-  const updatedIntern = await InternService.updateIntern(
-    id,
-    bodyData as Partial<IInternFormData>,
-    uploadedFiles
-  );
-  if (!updatedIntern) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      "Intern Form Data doesn't update successfully!"
-    );
-  }
-  sendResponse(res, {
-    success: true,
-    statusCode: StatusCodes.OK,
-    message: 'Intern updated successfully',
-    data: updatedIntern,
-  });
-});
+//   // Update intern in DB
+//   const updatedIntern = await InternService.updateIntern(
+//     id,
+//     bodyData as Partial<IInternFormData>,
+//     uploadedFiles
+//   );
+//   if (!updatedIntern) {
+//     throw new ApiError(
+//       StatusCodes.BAD_REQUEST,
+//       "Intern Form Data doesn't update successfully!"
+//     );
+//   }
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: StatusCodes.OK,
+//     message: 'Intern updated successfully',
+//     data: updatedIntern,
+//   });
+// });
 
 // Delete Intern
 const deleteIntern = catchAsync(async (req: Request, res: Response) => {
@@ -190,6 +122,6 @@ export const InternController = {
   createIntern,
   getAllInterns,
   getIntern,
-  updateIntern,
+  // updateIntern,
   deleteIntern,
 };
