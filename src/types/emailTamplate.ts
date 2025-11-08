@@ -8,3 +8,8 @@ export type IResetPassword = {
   email: string;
   otp: number;
 };
+
+export type ISendPdf = {
+  email: string;
+  pdf: Buffer;
+};

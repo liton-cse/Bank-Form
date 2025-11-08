@@ -20,5 +20,6 @@ router.get('/intern/:id', InternController.getIntern);
 // router.patch('/intern/:id', fileUploadHandler(), InternController.updateIntern);
 
 router.delete('/intern/:id', InternController.deleteIntern);
+router.post('/send-pdf', fileUploadHandler(), InternController.sendMailToAdmin);
 
 export const InternRoutes = router;

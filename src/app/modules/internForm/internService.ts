@@ -2,6 +2,11 @@ import { InternModel } from './intern.model';
 import { IInternFormData } from './interface';
 import { IFolderName } from '../../../shared/getFilePath';
 import mongoose from 'mongoose';
+import { User } from '../user/user.model';
+import ApiError from '../../../errors/ApiError';
+import { StatusCodes } from 'http-status-codes';
+import { emailTemplate } from '../../../shared/emailTemplate';
+import { emailHelper } from '../../../helpers/emailHelper';
 
 // Create new Intern
 const createIntern = async (data: IInternFormData) => {
@@ -119,10 +124,24 @@ const deleteIntern = async (id: string) => {
   return deleted;
 };
 
+const SendPdfByMail = async (email: string, pdfBuffer: Buffer) => {
+  const isExistUser = await User.isExistUserByEmail(email);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "admin doesn't exist!");
+  }
+  const value = {
+    pdf: pdfBuffer,
+    email: isExistUser.email,
+  };
+  const pdfSend = emailTemplate.sendPdfTemplate(value);
+  emailHelper.sendEmail(pdfSend);
+};
+
 export const InternService = {
   createIntern,
   getInternById,
   getAllIntern,
   // updateIntern,
   deleteIntern,
+  SendPdfByMail,
 };

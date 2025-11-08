@@ -118,10 +118,38 @@ const deleteIntern = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const sendMailToAdmin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+
+    // Check if file exists
+    if (!req.file) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: 'No PDF file uploaded',
+      });
+    }
+
+    const pdfBuffer = req.file.buffer;
+
+    try {
+      const result = await InternService.SendPdfByMail(email, pdfBuffer);
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        data: 'PDF sent to admin successfully',
+      });
+    } catch (err) {
+      next(err); // pass the error to global error handler
+    }
+  }
+);
+
 export const InternController = {
   createIntern,
   getAllInterns,
   getIntern,
   // updateIntern,
   deleteIntern,
+  sendMailToAdmin,
 };
