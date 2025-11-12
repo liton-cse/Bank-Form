@@ -7,6 +7,7 @@ import { TemporaryRouter } from '../app/modules/temporaryForm/temporaryRoutes';
 import { CalendarRoutes } from '../app/modules/adminCalender/calendar.route';
 import { TemporaryTimeSheetRoutes } from '../app/modules/weeklyTimeSheet/timeSheet.routes';
 import { InternTimeSheetRoutes } from '../app/modules/weeklyTimeSheetIntern/timeSheet.routes';
+import { AdminTimeSheetRoutes } from '../app/modules/adminTimeSheetUp/adminTimeSheetRoute';
 const router = express.Router();
 
 const apiRoutes = [
@@ -38,6 +39,10 @@ const apiRoutes = [
   {
     path: '/calendar',
     route: CalendarRoutes,
+  },
+  {
+    path: '/time-sheet',
+    route: AdminTimeSheetRoutes,
   },
 
   {
