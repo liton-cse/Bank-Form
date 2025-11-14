@@ -138,11 +138,13 @@ export interface IW4Info {
   address: string;
   maritalStatus?: IW4Status; // maritalStaus..
   acceptedTerms?: boolean;
-  // required
-  qualifyingChildrenNo: number; // if your total income will be 200000.
-  amount: number;
+  childrenNo: number; // if your total income will be 200000.
+  amount?: number;
   childrenDepencyNo: number;
+  eachDepencyAmount?: number;
   TotalDependencyAmount: number;
+  withHoldAmount: number;
+  deductedAmount: string;
   extraWithHoldingAmount: number;
   signatureDate?: string;
 }
