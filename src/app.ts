@@ -14,11 +14,7 @@ app.use(Morgan.errorHandler);
 //body parser
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'https://cbyrac-inc-rose.vercel.app',
-      'https://cbyrac-inc-git-main-litons-projects.vercel.app',
-    ],
+    origin: ['http://localhost:5173', 'https://cbyrac-inc-rose.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
@@ -26,6 +22,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static('public'));
 //file retrieve
 app.use(express.static('uploads'));
 app.use(cleanFormDataSpace);

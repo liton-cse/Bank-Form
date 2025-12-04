@@ -8,6 +8,7 @@ import { CalendarRoutes } from '../app/modules/adminCalender/calendar.route';
 import { TemporaryTimeSheetRoutes } from '../app/modules/weeklyTimeSheet/timeSheet.routes';
 import { InternTimeSheetRoutes } from '../app/modules/weeklyTimeSheetIntern/timeSheet.routes';
 import { AdminTimeSheetRoutes } from '../app/modules/adminTimeSheetUp/adminTimeSheetRoute';
+import { AdminI9FormAndW4FormRoute } from '../app/modules/adimI9FormAndW4Form/route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -48,6 +49,10 @@ const apiRoutes = [
   {
     path: '/admin',
     route: AdminFormRoutes,
+  },
+  {
+    path: '/pdf',
+    route: AdminI9FormAndW4FormRoute,
   },
 ];
 
