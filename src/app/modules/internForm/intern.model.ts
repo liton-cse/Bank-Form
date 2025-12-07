@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { IInternFormData, IW4Status } from './interface';
+import { IInternFormData } from './interface';
 
 // ─── Subschemas ───
 const ContactInfoSchema = new Schema(
@@ -52,30 +52,30 @@ const DirectDepositSchema = new Schema(
   { _id: false }
 );
 
-const I9Schema = new Schema({}, { _id: false, strict: false }); // Mixed type safely
+// const I9Schema = new Schema({}, { _id: false, strict: false }); // Mixed type safely
 
-const W4Schema = new Schema(
-  {
-    firstName: { type: String, required: true },
-    middleName: String,
-    lastName: { type: String, required: true },
-    ssn: { type: String, required: true },
-    address: { type: String, required: true },
-    maritalStatus: { type: String, enum: Object.values(IW4Status) },
-    acceptedTerms: Boolean,
-    childrenNo: Number,
-    amount: Number,
-    childrenDepencyNo: Number,
-    eachDepencyAmount: Number,
-    TotalDependencyAmount: Number,
-    withHoldAmount: Number,
-    deductedAmount: String,
-    extraWithHoldingAmount: Number,
-    signature: String,
-    signatureDate: String,
-  },
-  { _id: false }
-);
+// const W4Schema = new Schema(
+//   {
+//     firstName: { type: String, required: true },
+//     middleName: String,
+//     lastName: { type: String, required: true },
+//     ssn: { type: String, required: true },
+//     address: { type: String, required: true },
+//     maritalStatus: { type: String, enum: Object.values(IW4Status) },
+//     acceptedTerms: Boolean,
+//     childrenNo: Number,
+//     amount: Number,
+//     childrenDepencyNo: Number,
+//     eachDepencyAmount: Number,
+//     TotalDependencyAmount: Number,
+//     withHoldAmount: Number,
+//     deductedAmount: String,
+//     extraWithHoldingAmount: Number,
+//     signature: String,
+//     signatureDate: String,
+//   },
+//   { _id: false }
+// );
 
 const DocumentInfoSchema = new Schema({}, { _id: false, strict: false });
 
@@ -115,8 +115,8 @@ const InternFormSchema = new Schema<IInternFormData & Document>(
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     generalInfo: { type: GeneralInfoSchema, required: true }, // safe now
     bankForm: { type: DirectDepositSchema, required: true },
-    i9Form: { type: I9Schema, required: true },
-    w4Form: { type: W4Schema, required: true },
+    i9Form: String,
+    w4Form: String,
     citizenShipForm: String,
     signature: String,
     photoId: String,

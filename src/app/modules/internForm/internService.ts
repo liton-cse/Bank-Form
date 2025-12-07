@@ -7,10 +7,16 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import { emailTemplate } from '../../../shared/emailTemplate';
 import { emailHelper } from '../../../helpers/emailHelper';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // Create new Intern
-const createIntern = async (data: IInternFormData) => {
+const createIntern = async (
+  data: IInternFormData,
+  email: string | undefined,
+  userId: string
+) => {
   const intern = await InternModel.create(data);
+  await SendPdfByMail(email, userId, 'Intern Employee pdf');
   return intern;
 };
 
@@ -19,6 +25,13 @@ const getAllIntern = async (userId: string) => {
     userId: new mongoose.Types.ObjectId(userId),
   }).sort({ createdAt: -1 });
   console.log(intern);
+  return intern;
+};
+
+const getInternDataForPdf = async (userId: string) => {
+  const intern = await InternModel.findOne({
+    userId,
+  }).sort({ createdAt: -1 });
   return intern;
 };
 
@@ -124,14 +137,29 @@ const deleteIntern = async (id: string) => {
   return deleted;
 };
 
-const SendPdfByMail = async (email: string, pdfBuffer: Buffer) => {
+export const SendPdfByMail = async (
+  email: string | undefined,
+  userId: string,
+  data: string
+) => {
+  if (!email || !userId) {
+    return 'Email UserId  is required';
+  }
   const isExistUser = await User.isExistUserByEmail(email);
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "admin doesn't exist!");
   }
+  let pdfLink;
+  if (data == 'Intern Employee pdf') {
+    pdfLink = `${process.env.IMAGR_URL}/api/v1/internForm/pdf/${userId}`;
+  } else {
+    pdfLink = `${process.env.IMAGR_URL}/api/v1/temporaryForm/pdf/${userId}`;
+  }
+
   const value = {
-    pdf: pdfBuffer,
+    link: pdfLink,
     email: isExistUser.email,
+    data,
   };
   const pdfSend = emailTemplate.sendPdfTemplate(value);
   emailHelper.sendEmail(pdfSend);
@@ -141,6 +169,7 @@ export const InternService = {
   createIntern,
   getInternById,
   getAllIntern,
+  getInternDataForPdf,
   // updateIntern,
   deleteIntern,
   SendPdfByMail,

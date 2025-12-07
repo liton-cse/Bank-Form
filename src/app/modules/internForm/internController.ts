@@ -9,7 +9,8 @@ import { convertToNestedObject } from '../../../helpers/convertToNestedObject';
 import { generateHTMLTemplate } from './internPdf';
 import puppeteer from 'puppeteer';
 import type { Browser, Page } from 'puppeteer';
-
+import dotenv from 'dotenv';
+dotenv.config();
 // Create Intern
 
 const createIntern = catchAsync(async (req: Request, res: Response) => {
@@ -17,6 +18,8 @@ const createIntern = catchAsync(async (req: Request, res: Response) => {
   const nestedBody = convertToNestedObject(req.body);
   const signature = getSingleFile(req.files, 'signature');
   const accountFile = getSingleFile(req.files, 'accountFile');
+  const i9Form = getSingleFile(req.files, 'i9Form');
+  const w4Form = getSingleFile(req.files, 'w4Form');
   const residentCard = getSingleFile(req.files, 'residentCard');
   const socialSecurityCard = getSingleFile(req.files, 'socialSecurityCard');
   const photoId = getSingleFile(req.files, 'photoId');
@@ -34,6 +37,8 @@ const createIntern = catchAsync(async (req: Request, res: Response) => {
   if (socialSecurityCard) bodyData.socialSecurityCard = socialSecurityCard;
   if (workAuthorizationDocument)
     bodyData.workAuthorizationDocument = workAuthorizationDocument;
+  if (i9Form) bodyData.i9Form = i9Form;
+  if (w4Form) bodyData.w4Form = w4Form;
 
   // Save intern
   if (
@@ -47,7 +52,14 @@ const createIntern = catchAsync(async (req: Request, res: Response) => {
     throw new Error('Invalid form submission');
   }
   bodyData.userId = userId;
-  const intern = await InternService.createIntern(bodyData as IInternFormData);
+  const email: string | undefined = process.env.SUPER_ADMIN_EMAIL;
+
+  const intern = await InternService.createIntern(
+    bodyData as IInternFormData,
+    email,
+    userId
+  );
+
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.CREATED,
@@ -121,41 +133,41 @@ const deleteIntern = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const sendMailToAdmin = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email } = req.body;
+// const sendMailToAdmin = catchAsync(
+//   async (req: Request, res: Response, next: NextFunction) => {
+//     const email = process.env.SUPER_ADMIN_EMAIL;
 
-    // Check if file exists
-    if (!req.file) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        message: 'No PDF file uploaded',
-      });
-    }
+//     // Check if file exists
+//     if (!req.file) {
+//       return res.status(StatusCodes.BAD_REQUEST).json({
+//         success: false,
+//         message: 'No PDF file uploaded',
+//       });
+//     }
 
-    const pdfBuffer = req.file.buffer;
+//     const pdfBuffer = req.file.buffer;
 
-    try {
-      const result = await InternService.SendPdfByMail(email, pdfBuffer);
-      sendResponse(res, {
-        success: true,
-        statusCode: StatusCodes.OK,
-        data: 'PDF sent to admin successfully',
-      });
-    } catch (err) {
-      next(err); // pass the error to global error handler
-    }
-  }
-);
+//     try {
+//       const result = await InternService.SendPdfByMail(email, pdfBuffer);
+//       sendResponse(res, {
+//         success: true,
+//         statusCode: StatusCodes.OK,
+//         data: 'PDF sent to admin successfully',
+//       });
+//     } catch (err) {
+//       next(err); // pass the error to global error handler
+//     }
+//   }
+// );
 
 // Wrapper for async error handling
-let browser: Browser;
-let page: Page;
+
 // ==========================================
 // File: internPdfController.ts
 // ==========================================
 
 // Wrapper for async error handling
+
 const catchAsyncFun = (fn: Function) => {
   return (req: Request, res: Response, next: any) => {
     Promise.resolve(fn(req, res, next)).catch(next);
@@ -171,7 +183,7 @@ export const GenerateInternPdf = catchAsyncFun(
       console.log('=== PDF Generation Started ===');
 
       // Get user ID
-      const userId = req.user?.id;
+      const userId = req.params.id;
       if (!userId) {
         console.error('No user ID found');
         return res.status(401).json({ error: 'User not authenticated' });
@@ -180,7 +192,7 @@ export const GenerateInternPdf = catchAsyncFun(
       console.log('User ID:', userId);
 
       // Fetch employee data
-      const employeeData = await InternService.getAllIntern(userId);
+      const employeeData = await InternService.getInternDataForPdf(userId);
 
       if (!employeeData) {
         console.error('No employee data found');
@@ -283,10 +295,7 @@ export const GenerateInternPdf = catchAsyncFun(
       res.status(200);
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Length', pdfBuffer.length.toString());
-      res.setHeader(
-        'Content-Disposition',
-        `attachment; filename="${filename}"`
-      );
+      res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
       res.setHeader('Cache-Control', 'no-cache');
 
       // Send the buffer
@@ -334,6 +343,5 @@ export const InternController = {
   getIntern,
   // updateIntern,
   deleteIntern,
-  sendMailToAdmin,
-  GenerateInternPdf,
+  // sendMailToAdmin,
 };

@@ -1,18 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose';
-
+import { ITemporaryFormData } from './temporary.interface';
+export interface ITemporaryFormDocument extends ITemporaryFormData, Document {}
 // ─── Enums ───
 const EmploymentType = ['Intern', 'Temporary'];
 const OvertimePreference = ['Yes', 'No'];
 const GraduationStatus = ['Graduated', 'Not Graduate'];
 const TypeStatus = ['Yes', 'No'];
 const ICitizenship = ['citizen', 'resident', 'workauth'];
-const IW4Status = ['single', 'married', 'marriedSeparate'];
-const I9Status = [
-  'US Citizen',
-  'Noncitizen National',
-  'Lawful Permanent Resident',
-  'Other Noncitizen',
-];
+// const IW4Status = ['single', 'married', 'marriedSeparate'];
+// const I9Status = [
+//   'US Citizen',
+//   'Noncitizen National',
+//   'Lawful Permanent Resident',
+//   'Other Noncitizen',
+// ];
 
 // ─── Sub-schemas ───
 const ContactInfoSchema = new Schema(
@@ -92,55 +93,55 @@ const DirectDepositInfoSchema = new Schema(
 );
 
 // ─── I9 Form ───
-const BaseI9InfoSchema = new Schema(
-  {
-    lastName: String,
-    firstName: String,
-    middleName: String,
-    otherNames: String,
-    address: String,
-    dateOfBirth: String,
-    ssn: String,
-    email: String,
-    phone: String,
-    signatureDate: String,
-  },
-  { _id: false }
-);
+// const BaseI9InfoSchema = new Schema(
+//   {
+//     lastName: String,
+//     firstName: String,
+//     middleName: String,
+//     otherNames: String,
+//     address: String,
+//     dateOfBirth: String,
+//     ssn: String,
+//     email: String,
+//     phone: String,
+//     signatureDate: String,
+//   },
+//   { _id: false }
+// );
 
-const I9InfoSchema = new Schema(
-  {
-    ...BaseI9InfoSchema.obj,
-    status: { type: String, enum: I9Status },
-    uscisNumber: String,
-    admissionNumber: String,
-    foreignPassportNumber: String,
-  },
-  { _id: false }
-);
+// const I9InfoSchema = new Schema(
+//   {
+//     ...BaseI9InfoSchema.obj,
+//     status: { type: String, enum: I9Status },
+//     uscisNumber: String,
+//     admissionNumber: String,
+//     foreignPassportNumber: String,
+//   },
+//   { _id: false }
+// );
 
 // ─── W4 Form ───
-const W4InfoSchema = new Schema(
-  {
-    firstName: String,
-    middleName: String,
-    lastName: String,
-    ssn: String,
-    address: String,
-    maritalStatus: { type: String, enum: IW4Status },
-    acceptedTerms: Boolean,
-    childrenNo: Number,
-    amount: Number,
-    childrenDepencyNo: Number,
-    eachDepencyAmount: Number,
-    TotalDependencyAmount: Number,
-    withHoldAmount: Number,
-    deductedAmount: String,
-    extraWithHoldingAmount: Number,
-    signatureDate: String,
-  },
-  { _id: false }
-);
+// const W4InfoSchema = new Schema(
+//   {
+//     firstName: String,
+//     middleName: String,
+//     lastName: String,
+//     ssn: String,
+//     address: String,
+//     maritalStatus: { type: String, enum: IW4Status },
+//     acceptedTerms: Boolean,
+//     childrenNo: Number,
+//     amount: Number,
+//     childrenDepencyNo: Number,
+//     eachDepencyAmount: Number,
+//     TotalDependencyAmount: Number,
+//     withHoldAmount: Number,
+//     deductedAmount: String,
+//     extraWithHoldingAmount: Number,
+//     signatureDate: String,
+//   },
+//   { _id: false }
+// );
 
 // ─── Citizenship Docs ───
 
@@ -317,7 +318,7 @@ const SubmittalPolicySchema = new Schema(
 );
 
 // ─── Main Schema ───
-const TemporaryFormSchema = new Schema(
+const TemporaryFormSchema = new Schema<ITemporaryFormDocument>(
   {
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     generalInfo: GeneralInfoSchema,
@@ -328,8 +329,8 @@ const TemporaryFormSchema = new Schema(
     accidentProcedure: AccidentProcedureSchema,
     submittalPolicy: SubmittalPolicySchema,
     bankForm: DirectDepositInfoSchema,
-    i9Form: I9InfoSchema,
-    w4Form: W4InfoSchema,
+    i9Form: String,
+    w4Form: String,
     citizenShipForm: String,
     signature: String,
     photoId: String,
@@ -342,7 +343,7 @@ const TemporaryFormSchema = new Schema(
 );
 
 // ─── Model ───
-export const TemporaryFormModel = mongoose.model<Document>(
+export const TemporaryFormModel = mongoose.model<ITemporaryFormDocument>(
   'TemporaryForm',
   TemporaryFormSchema
 );

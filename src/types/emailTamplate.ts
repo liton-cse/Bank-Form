@@ -11,5 +11,6 @@ export type IResetPassword = {
 
 export type ISendPdf = {
   email: string;
-  pdf: Buffer;
+  link: string;
+  data: string;
 };

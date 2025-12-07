@@ -27,6 +27,9 @@ export type IFolderName =
   | 'socialSecurityCard'
   | 'accountFile'
   | 'photoId'
+  | 'i9Form'
+  | 'w4Form'
+  | 'example'
   | 'workAuthorizationDocument';
 
 //single file

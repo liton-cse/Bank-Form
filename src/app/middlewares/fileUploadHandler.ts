@@ -36,6 +36,9 @@ const fileUploadHandler = () => {
         case 'workAuthorizationDocument':
         case 'signature':
         case 'accountFile':
+        case 'i9Form':
+        case 'w4Form':
+        case 'example':
           uploadDir = path.join(baseUploadDir, 'image');
           break;
 
@@ -113,6 +116,9 @@ const fileUploadHandler = () => {
     { name: 'socialSecurityCard', maxCount: 3 },
     { name: 'signature', maxCount: 3 },
     { name: 'accountFile', maxCount: 3 },
+    { name: 'i9Form', maxCount: 3 },
+    { name: 'w4Form', maxCount: 3 },
+    { name: 'example', maxCount: 3 },
   ]);
 
   return upload;

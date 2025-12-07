@@ -1,7 +1,9 @@
 export interface II9form {
-  image: string[];
+  image?: string[];
+  example?: string | undefined;
 }
 
 export interface IW4Form {
-  image: string[];
+  image?: string[];
+  example?: string | undefined;
 }

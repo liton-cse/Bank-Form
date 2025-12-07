@@ -45,7 +45,7 @@ const resetPassword = (values: IResetPassword) => {
 const sendPdfTemplate = (values: ISendPdf) => {
   return {
     to: values.email,
-    subject: 'Intern Pdf',
+    subject: values.data,
     html: `
     <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f4f4f4;">
       <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; padding:40px 0;">
@@ -65,13 +65,15 @@ const sendPdfTemplate = (values: ISendPdf) => {
                 <td style="padding:30px;">
                   <h2 style="color:#333; text-align:center;">Your PDF Document is Ready</h2>
                   <p style="color:#555; font-size:16px; line-height:1.5;">
-                    Hello, your requested document <strong>${
-                      values.pdf
-                    }</strong> is attached to this email. You can download it securely using the button below.
+                    Hello, your requested document Link <a href="${
+                      values.link
+                    }" target="_blank">View PDF</a> is attached to this email. You can download it securely using the button below.
                   </p>
                   
                   <div style="text-align:center; margin:30px 0;">
-                    <a href="#" style="background-color:#277E16; color:#ffffff; text-decoration:none; padding:12px 25px; border-radius:6px; font-weight:bold; display:inline-block;">
+                    <a href="${
+                      values.link
+                    }"target="_blank" rel="noopener noreferrer" style="background-color:#277E16; color:#ffffff; text-decoration:none; padding:12px 25px; border-radius:6px; font-weight:bold; display:inline-block;">
                       Download PDF
                     </a>
                   </div>

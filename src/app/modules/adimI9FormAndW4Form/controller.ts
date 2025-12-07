@@ -2,13 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { getMultipleFilesPaths } from '../../../shared/getFilePath';
+import {
+  getMultipleFilesPaths,
+  getSingleFile,
+} from '../../../shared/getFilePath';
 import AdminI9FormAndW4FormService from './service';
 
 class AdminI9FormAndW4FormController {
   createI9Form = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const images = getMultipleFilesPaths(req.files, 'image');
+      const example = getSingleFile(req.files, 'example');
       console.log(images);
       if (!images || images.length === 0) {
         return sendResponse(res, {
@@ -20,6 +24,7 @@ class AdminI9FormAndW4FormController {
 
       const calendar = await AdminI9FormAndW4FormService.createAdminI9Form({
         image: images,
+        example,
       });
 
       sendResponse(res, {
@@ -34,6 +39,7 @@ class AdminI9FormAndW4FormController {
   createW4Form = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
       const images = getMultipleFilesPaths(req.files, 'image');
+      const example = getSingleFile(req.files, 'example');
       console.log(images);
       if (!images || images.length === 0) {
         return sendResponse(res, {
@@ -45,6 +51,7 @@ class AdminI9FormAndW4FormController {
 
       const calendar = await AdminI9FormAndW4FormService.createAdminW4Form({
         image: images,
+        example,
       });
 
       sendResponse(res, {

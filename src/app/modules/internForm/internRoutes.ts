@@ -1,5 +1,5 @@
 import express from 'express';
-import { InternController } from './internController';
+import { GenerateInternPdf, InternController } from './internController';
 import { USER_ROLES } from '../../../enums/user';
 import auth from '../../middlewares/auth';
 import fileUploadHandler from '../../middlewares/fileUploadHandler';
@@ -20,7 +20,5 @@ router.get('/intern/:id', InternController.getIntern);
 // router.patch('/intern/:id', fileUploadHandler(), InternController.updateIntern);
 
 router.delete('/intern/:id', InternController.deleteIntern);
-router.post('/send-pdf', fileUploadHandler(), InternController.sendMailToAdmin);
-router.get('/pdf', auth(USER_ROLES.USER), InternController.GenerateInternPdf);
-
+router.get('/pdf/:id', GenerateInternPdf);
 export const InternRoutes = router;

@@ -30,11 +30,13 @@ interface EmployeeData {
     previouslyEmployed?: boolean;
     previousSeparationReason?: string;
     education?: {
+      level?: string;
+      name?: string;
       major?: string;
       graduationStatus?: string;
       yearsCompleted?: string | number;
-      honorsReceived?: boolean | string;
-    };
+      honorsReceived?: string;
+    }[];
   };
   bankForm?: {
     name?: string;
@@ -81,9 +83,13 @@ const sanitize = (value: any): string => {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 };
+
 import dotenv from 'dotenv';
 dotenv.config();
-export const generateHTMLTemplate = (employeeData: EmployeeData): string => {
+
+export const generateHTMLTemplateForTemporary = (
+  employeeData: EmployeeData
+): string => {
   if (!employeeData) {
     throw new Error('Employee data is required');
   }
@@ -105,7 +111,7 @@ export const generateHTMLTemplate = (employeeData: EmployeeData): string => {
     }
   };
 
-  // Generate account file URL
+  // Generate URLs
   const accountFileUrl = employeeData.accountFile
     ? `${process.env.IMAGR_URL_IMAGE || 'http://10.10.7.102:8000'}/image${
         employeeData.accountFile
@@ -127,7 +133,15 @@ export const generateHTMLTemplate = (employeeData: EmployeeData): string => {
         employeeData.w4Form
       }`
     : '';
-  console.log(signature);
+
+  // Get education array or create empty array
+  const educationData = employeeData.generalInfo?.education || [];
+  // Ensure we have at least 4 rows (fill with empty objects if needed)
+  const educationRows = [...educationData];
+  while (educationRows.length < 4) {
+    educationRows.push({});
+  }
+
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -432,11 +446,34 @@ export const generateHTMLTemplate = (employeeData: EmployeeData): string => {
         padding: 0.25rem;
         text-align: left;
         font-weight: 500;
+        vertical-align: top;
       }
 
       th {
         background-color: #f0f0f0;
         font-size: 10px;
+        font-weight: bold;
+      }
+      
+      /* Education table specific styles */
+      .education-table td {
+        height: 60px; /* Fixed height for each row */
+      }
+      
+      .education-table th:nth-child(1) {
+        width: 25%;
+      }
+      .education-table th:nth-child(2) {
+        width: 20%;
+      }
+      .education-table th:nth-child(3) {
+        width: 15%;
+      }
+      .education-table th:nth-child(4) {
+        width: 15%;
+      }
+      .education-table th:nth-child(5) {
+        width: 25%;
       }
       
       /* Logo positioning */
@@ -1073,26 +1110,33 @@ body {
 
       <!-- Education Section -->
       <h3 class="text-sm font-bold mb-1">Education</h3>
-      <table class="border mb-3 keep-together">
+      <table class="border mb-3 keep-together education-table">
         <thead>
           <tr>
             <th>School Name<br />(Address, City, State)</th>
             <th>Course of Study or Major</th>
+            <th>Level</th>
             <th>Graduate? Y or N</th>
             <th># of Years Completed</th>
             <th>Honors Received</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>High School</td>
-            <td>&nbsp;${get(`generalInfo.education.major`)}&nbsp;</td>
-            <td>&nbsp;${get(
-              `generalInfo.education.graduationStatus`
-            )}&nbsp;</td>
-            <td>&nbsp;${get(`generalInfo.education.yearsCompleted`)}&nbsp;</td>
-            <td>&nbsp;${get(`generalInfo.education.honorsReceived`)}&nbsp;</td>
-          </tr>
+          ${educationRows
+            .slice(0, 4)
+            .map(
+              (edu, index) => `
+            <tr>
+              <td>&nbsp;${edu.name || ''}&nbsp;</td>
+              <td>&nbsp;${edu.major || ''}&nbsp;</td>
+              <td>&nbsp;${edu.level || ''}&nbsp;</td>
+              <td>&nbsp;${edu.graduationStatus || ''}&nbsp;</td>
+              <td>&nbsp;${edu.yearsCompleted || ''}&nbsp;</td>
+              <td>&nbsp;${edu.honorsReceived || ''}&nbsp;</td>
+            </tr>
+          `
+            )
+            .join('')}
         </tbody>
       </table>
 

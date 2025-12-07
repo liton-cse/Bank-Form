@@ -1,12 +1,23 @@
 import { TemporaryFormModel } from './temporary.model';
 import { ITemporaryFormData } from './temporary.interface'; // optional if you have your interfaces
 import { IFolderName } from '../../../shared/getFilePath';
+import { SendPdfByMail } from '../internForm/internService';
 
-const createForm = async (data: ITemporaryFormData) => {
+const createForm = async (
+  data: ITemporaryFormData,
+  email: string | undefined,
+  userId: string
+) => {
   const temporary = await TemporaryFormModel.create(data);
+  await SendPdfByMail(email, userId, 'Temporary Employee pdf');
   return temporary;
 };
-
+const getTemporaryDataForPdf = async (userId: string) => {
+  const intern = await TemporaryFormModel.findOne({
+    userId,
+  }).sort({ createdAt: -1 });
+  return intern;
+};
 // Get all forms
 const getAllForms = async (userId: string) => {
   return await TemporaryFormModel.findOne({ userId }).sort({ createdAt: -1 });
@@ -174,4 +185,5 @@ export const temporaryFormService = {
   // getFormById,
   // updateFormService,
   deleteForm,
+  getTemporaryDataForPdf,
 };

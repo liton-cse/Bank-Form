@@ -1,5 +1,8 @@
 import express from 'express';
-import { temporaryFormController } from './temporaryController';
+import {
+  GenerateTemporaryPdf,
+  temporaryFormController,
+} from './temporaryController';
 import auth from '../../middlewares/auth';
 import { USER_ROLES } from '../../../enums/user';
 import fileUploadHandler from '../../middlewares/fileUploadHandler';
@@ -35,5 +38,6 @@ router.delete(
   auth(USER_ROLES.USER),
   temporaryFormController.deleteForm
 );
+router.get('/pdf/:id', GenerateTemporaryPdf);
 
 export const TemporaryRouter = router;

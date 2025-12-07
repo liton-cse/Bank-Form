@@ -36,18 +36,18 @@ export enum ICitizenship {
   WorkAuthorization = 'workauth',
 }
 
-export enum IW4Status {
-  Single = 'single',
-  Married = 'married',
-  MarriedHigher = 'marriedSeparate',
-}
+// export enum IW4Status {
+//   Single = 'single',
+//   Married = 'married',
+//   MarriedHigher = 'marriedSeparate',
+// }
 
-export enum I9Status {
-  Citizen = 'US Citizen',
-  NonCitizen = 'Noncitizen National',
-  Permanent = 'Lawful Permanent Resident',
-  NonCitizen_Other = 'Other Noncitizen',
-}
+// export enum I9Status {
+//   Citizen = 'US Citizen',
+//   NonCitizen = 'Noncitizen National',
+//   Permanent = 'Lawful Permanent Resident',
+//   NonCitizen_Other = 'Other Noncitizen',
+// }
 
 // Sub-interfaces for better organization
 export interface IGeneralInfo {
@@ -96,58 +96,58 @@ export interface IDirectDepositInfo {
 }
 
 // Base info common to all I9 forms
-export interface IBaseI9Info {
-  lastName: string;
-  firstName: string;
-  middleName: string;
-  otherNames: string;
-  address: string;
-  dateOfBirth: string;
-  ssn: string;
-  email: string;
-  phone: string;
-  signatureDate?: string;
-}
+// export interface IBaseI9Info {
+//   lastName: string;
+//   firstName: string;
+//   middleName: string;
+//   otherNames: string;
+//   address: string;
+//   dateOfBirth: string;
+//   ssn: string;
+//   email: string;
+//   phone: string;
+//   signatureDate?: string;
+// }
 // Citizen or NonCitizen: no extra required fields
-export interface ICitizenInfo extends IBaseI9Info {
-  status: I9Status.Citizen | I9Status.NonCitizen;
-}
+// export interface ICitizenInfo extends IBaseI9Info {
+//   status: I9Status.Citizen | I9Status.NonCitizen;
+// }
 
 // Permanent: requires only uscisNumber
-export interface IPermanentInfo extends IBaseI9Info {
-  status: I9Status.Permanent;
-  uscisNumber: string;
-}
+// export interface IPermanentInfo extends IBaseI9Info {
+//   status: I9Status.Permanent;
+//   uscisNumber: string;
+// }
 
 // NonCitizen_Other: requires uscisNumber, admissionNumber, and foreignPassportNumber
-export interface INonCitizenOtherInfo extends IBaseI9Info {
-  status: I9Status.NonCitizen_Other;
-  uscisNumber: string;
-  admissionNumber: string;
-  foreignPassportNumber: string;
-}
+// export interface INonCitizenOtherInfo extends IBaseI9Info {
+//   status: I9Status.NonCitizen_Other;
+//   uscisNumber: string;
+//   admissionNumber: string;
+//   foreignPassportNumber: string;
+// }
 
 // Union type
-export type I9Info = ICitizenInfo | IPermanentInfo | INonCitizenOtherInfo;
+// export type I9Info = ICitizenInfo | IPermanentInfo | INonCitizenOtherInfo;
 
-export interface IW4Info {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  ssn: string;
-  address: string;
-  maritalStatus?: IW4Status; // maritalStaus..
-  acceptedTerms?: boolean;
-  childrenNo: number; // if your total income will be 200000.
-  amount?: number;
-  childrenDepencyNo: number;
-  eachDepencyAmount?: number;
-  TotalDependencyAmount: number;
-  withHoldAmount: number;
-  deductedAmount: string;
-  extraWithHoldingAmount: number;
-  signatureDate?: string;
-}
+// export interface IW4Info {
+//   firstName: string;
+//   middleName: string;
+//   lastName: string;
+//   ssn: string;
+//   address: string;
+//   maritalStatus?: IW4Status; // maritalStaus..
+//   acceptedTerms?: boolean;
+//   childrenNo: number; // if your total income will be 200000.
+//   amount?: number;
+//   childrenDepencyNo: number;
+//   eachDepencyAmount?: number;
+//   TotalDependencyAmount: number;
+//   withHoldAmount: number;
+//   deductedAmount: string;
+//   extraWithHoldingAmount: number;
+//   signatureDate?: string;
+// }
 
 // employee section..
 export interface ITerminationInfo {
@@ -265,8 +265,8 @@ export interface ITemporaryFormData {
   accidentProcedure: IAccidentProcedure;
   submittalPolicy: ISubmittalpolicy;
   bankForm: IDirectDepositInfo;
-  i9Form: I9Info;
-  w4Form: IW4Info;
+  i9Form: string;
+  w4Form: string;
   citizenShipForm: string;
   signature: string;
   photoId?: string | undefined;

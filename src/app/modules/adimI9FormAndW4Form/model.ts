@@ -5,7 +5,9 @@ const PdfFormSchema: Schema = new Schema(
   {
     image: {
       type: [String],
-      required: true,
+    },
+    example: {
+      type: String,
     },
   },
   { timestamps: true }
