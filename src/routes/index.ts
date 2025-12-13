@@ -9,6 +9,7 @@ import { TemporaryTimeSheetRoutes } from '../app/modules/weeklyTimeSheet/timeShe
 import { InternTimeSheetRoutes } from '../app/modules/weeklyTimeSheetIntern/timeSheet.routes';
 import { AdminTimeSheetRoutes } from '../app/modules/adminTimeSheetUp/adminTimeSheetRoute';
 import { AdminI9FormAndW4FormRoute } from '../app/modules/adimI9FormAndW4Form/route';
+import { AdminI9FormAndW4FormExampleRouter } from '../app/modules/adminExamplei9FormAndw4Form/example.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -53,6 +54,10 @@ const apiRoutes = [
   {
     path: '/pdf',
     route: AdminI9FormAndW4FormRoute,
+  },
+  {
+    path: '/example',
+    route: AdminI9FormAndW4FormExampleRouter,
   },
 ];
 
